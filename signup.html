@@ -1,63 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup - FeastfulFusions</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signup</title>
     <!-- Bootstrap CSS link -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="styles.css">
-</head>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
 
-<body>
+  <>
     <header>
-        <!-- Navbar -->
-        <!-- Include the navigation bar from index.html here, if needed. -->
+      <!-- Navbar -->
+      <!-- Include the navigation bar from index.html here, if needed. -->
     </header>
 
     <main>
-        <!-- Signup Form -->
-        <section class="form-section">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-6 offset-md-3">
-                        <h2>Signup</h2>
-                        <form>
-                            <div class="form-group">
-                                <label for="name">Name:</label>
-                                <input type="text" class="form-control" id="name" placeholder="Enter your name">
-                            </div>
-                            <div class="form-group">
-                                <label for="email">Email:</label>
-                                <input type="email" class="form-control" id="email" placeholder="Enter your email">
-                            </div>
-                            <div class="form-group">
-                                <label for="password">Password:</label>
-                                <input type="password" class="form-control" id="password"
-                                    placeholder="Enter your password">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Signup</button>
-                        </form>
-                        <!-- Add the "already signed? LogIn" link -->
-                        <p>Already signed? <a href="./login.html">LogIn</a></p>
-                    </div>
+      <!-- Signup Form -->
+      <section class="form-section">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6 offset-md-3">
+              <h2>Signup</h2>
+              <form onsubmit="return validateSignupForm();">
+                <div class="form-group">
+                  <label for="name">Name:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    placeholder="Enter your name"
+                    required
+                  />
+                  <p id="nameError" style="color: red; display: none">
+                    Please enter your name.
+                  </p>
                 </div>
+                <div class="form-group">
+                  <label for="email">Email:</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    placeholder="Enter your email"
+                    required
+                  />
+                  <p id="emailError" style="color: red; display: none">
+                    Please enter a valid email.
+                  </p>
+                </div>
+                <div class="form-group">
+                  <label for="password">Password:</label>
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="password"
+                    placeholder="Enter your password"
+                    required
+                  />
+                  <p id="passwordError" style="color: red; display: none">
+                    Password must be at least 8 characters long.
+                  </p>
+                </div>
+                <button type="submit" class="btn btn-primary">Signup</button>
+              </form>
+
+              <!-- Add the "already signed? LogIn" link -->
+              <p>Already signed? <a href="./index.html">LogIn</a></p>
             </div>
-        </section>
+          </div>
+        </div>
+      </section>
     </main>
 
     <footer>
-        <!-- Include the footer section from index.html here, if needed. -->
+      <!-- Include the footer section from index.html here, if needed. -->
     </footer>
 
     <!-- Bootstrap JS and jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.9/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="signup.js"></script>
+    <script src="validation.js"></script>
 
-</body>
 
+    <script>
+      function validateSignupForm() {
+        let name = document.getElementById("name").value;
+        let email = document.getElementById("email").value;
+        let password = document.getElementById("password").value;
+        let validName = validateUsername(name);
+        let validEmail = validateEmail(email);
+        let validPassword = validatePassword(password);
+        document.getElementById("nameError").style.display = validName ? "none" : "block";
+        document.getElementById("emailError").style.display = validEmail ? "none" : "block";
+        document.getElementById("passwordError").style.display = validPassword ? "none" : "block";
+        if (validName && validEmail && validPassword) {
+          let users = JSON.parse(localStorage.getItem('users')) || {};
+          if (!users[email]) {
+            users[email] = { name: name, password: password };
+            localStorage.setItem('users', JSON.stringify(users));
+            return true;
+          } else {
+            alert("User already exists. Please use a different email.");
+          }
+        }
+        return false;
+      }
+    </script>
+  </body>
 </html>
