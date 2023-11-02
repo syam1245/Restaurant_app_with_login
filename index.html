@@ -73,13 +73,16 @@
     <script>
       function validateLoginForm(event) {
         event.preventDefault(); // Prevents the default form submission action
-
         let email = document.getElementById("email").value;
         let password = document.getElementById("password").value;
-
         let users = JSON.parse(localStorage.getItem('users')) || {};
 
         if (users[email] && users[email].password === password) {
+          const loginTime = localStorage.getItem('loginTime');
+          if (!loginTime) {
+            localStorage.setItem('loginTime', Date.now()); // Store the login time only if it's not already set
+          }
+          localStorage.setItem('isLoggedIn', 'true');
           window.location.href = "./home.html";
           return true;
         } else {
@@ -87,7 +90,34 @@
           return false;
         }
       }
-      </script>
+
+      function checkAuth() {
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        const loginTime = localStorage.getItem('loginTime');
+        const currentTime = Date.now();
+
+        if (isLoggedIn !== 'true' || !loginTime) {
+          localStorage.removeItem('loginTime');
+          localStorage.removeItem('isLoggedIn');
+          if (!window.location.href.includes('index.html')) {
+            window.location.href = 'index.html'; // Redirect to the login page if not already there
+          }
+        } else {
+          const timeDifference = (currentTime - parseInt(loginTime)) / (1000 * 60); // Difference in minutes
+          if (timeDifference > 5) {
+            localStorage.removeItem('loginTime');
+            localStorage.removeItem('isLoggedIn');
+            if (!window.location.href.includes('index.html')) {
+              window.location.href = 'index.html'; // Redirect to the login page if not already there
+            }
+          }
+        }
+      }
+
+      checkAuth();
+    </script>
+
+
 
   </body>
 </html>
